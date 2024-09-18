@@ -74,5 +74,8 @@ alias vim='nvim'
 alias c='clear'
 
 # Shell integrations
-eval "$(fzf --zsh)"
+# eval "$(fzf --zsh)"
 eval "$(zoxide init --cmd cd zsh)"
+
+# Load the software
+export PATH="$PATH:/opt/nvim-linux64/bin"
