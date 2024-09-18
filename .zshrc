@@ -81,3 +81,9 @@ eval "$(zoxide init --cmd cd zsh)"
 export PATH="$PATH:/opt/nvim-linux64/bin"
 
 unset -f cd
+
+if [ ! -d ~/.tmux/plugins/tpm ]; then
+    echo "TPM not found! Cloning..." >&2
+    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+fi
+
