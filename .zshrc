@@ -79,3 +79,5 @@ eval "$(zoxide init --cmd cd zsh)"
 
 # Load the software
 export PATH="$PATH:/opt/nvim-linux64/bin"
+
+unset -f cd
