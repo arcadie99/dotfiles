@@ -20,5 +20,3 @@ local opts = {}
 -- Setup lazy.nvim
 require("vim-basic-config")
 require("lazy").setup("plugins")
-
-

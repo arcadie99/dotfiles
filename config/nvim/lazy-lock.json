@@ -1,9 +1,10 @@
 {
   "LuaSnip": { "branch": "master", "commit": "6a001360cea89df50f7c5cc8c7a75e6a21f1ef5c" },
+  "blade-nav.nvim": { "branch": "main", "commit": "3db8376be88195468d45ed186eded7224c1605ff" },
   "catppuccin": { "branch": "main", "commit": "10eda02ea4faa7d1f94e77a3410a4ae91c25c5f5" },
   "cmp-nvim-lsp": { "branch": "main", "commit": "5af77f54de1b16c34b23cba810150689a3a90312" },
   "cmp_luasnip": { "branch": "master", "commit": "05a9ab28b53f71d1aece421ef32fee2cb857a843" },
-  "conform.nvim": { "branch": "master", "commit": "e3263eabbfc1bdbc5b6a60ba8431b64e8dca0a79" },
+  "coq_nvim": { "branch": "coq", "commit": "db12581bea4e83b8d8142c15daa9632d796636cf" },
   "friendly-snippets": { "branch": "main", "commit": "53d3df271d031c405255e99410628c26a8f0d2b0" },
   "gitsigns.nvim": { "branch": "main", "commit": "d195f0c35ced5174d3ecce1c4c8ebb3b5bc23fa9" },
   "laravel.nvim": { "branch": "main", "commit": "2e7c08c0511234d5816166c1204e2240edac99b5" },
