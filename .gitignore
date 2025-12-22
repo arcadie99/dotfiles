@@ -1,0 +1,31 @@
+# Secrets and credentials
+*.env
+*.env.local
+.env*
+*secret*
+*token*
+*credentials*
+*.key
+*.pem
+id_rsa*
+id_ed25519*
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Editor
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Temporary files
+*.log
+*.tmp
+tmp/
+
+# Personal/Private
+personal/
+private/

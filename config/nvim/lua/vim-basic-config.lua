@@ -5,3 +5,6 @@ vim.cmd("set shiftwidth=4")
 -- vim.cmd("set number")
 vim.cmd("set relativenumber number")
 vim.g.mapleader = " "
+
+vim.opt.termguicolors = true
+
