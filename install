@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+
+# ThePrimeagen-style dotfiles installer using GNU Stow
+# Run this script to install dotfiles
+
+set -e  # Exit on error
+
+echo "🚀 Installing dotfiles..."
+echo ""
+
+# Change to dotfiles directory
+cd "$(dirname "$0")"
+DOTFILES_DIR=$(pwd)
+
+echo "📂 Dotfiles directory: $DOTFILES_DIR"
+echo ""
+
+# List of packages to install
+PACKAGES=(
+    "zsh"
+    "nvim"
+    "tmux"
+    "scripts"
+)
+
+# Function to stow a package
+stow_package() {
+    local package=$1
+    echo "📦 Installing $package..."
+
+    # Remove old symlinks if they exist
+    stow -D "$package" 2>/dev/null || true
+
+    # Create new symlinks
+    stow -v "$package"
+
+    echo "✅ $package installed"
+    echo ""
+}
+
+# Install each package
+for package in "${PACKAGES[@]}"; do
+    if [ -d "$package" ]; then
+        stow_package "$package"
+    else
+        echo "⚠️  Warning: $package directory not found, skipping..."
+        echo ""
+    fi
+done
+
+echo "🎉 Dotfiles installation complete!"
+echo ""
+echo "Installed packages:"
+for package in "${PACKAGES[@]}"; do
+    if [ -d "$package" ]; then
+        echo "  ✓ $package"
+    fi
+done
+echo ""
+echo "To uninstall, run: stow -D <package>"
+echo "To reinstall, run: ./install"

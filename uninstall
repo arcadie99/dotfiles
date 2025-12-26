@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+# Uninstall dotfiles (remove all symlinks)
+
+set -e
+
+echo "🗑️  Uninstalling dotfiles..."
+echo ""
+
+cd "$(dirname "$0")"
+
+PACKAGES=(
+    "zsh"
+    "nvim"
+    "tmux"
+    "scripts"
+)
+
+for package in "${PACKAGES[@]}"; do
+    if [ -d "$package" ]; then
+        echo "📦 Removing $package symlinks..."
+        stow -D "$package" 2>/dev/null || echo "⚠️  No symlinks found for $package"
+        echo ""
+    fi
+done
+
+echo "✅ Dotfiles uninstalled!"
