@@ -9,51 +9,50 @@ return {
         "williamboman/mason-lspconfig.nvim",
         config = function()
             require("mason-lspconfig").setup({
-                ensure_installed = { "lua_ls", "ts_ls", "clangd", "intelephense", "phpactor" }
+                -- phpactor removed: was running duplicate/conflicting diagnostics
+                -- alongside intelephense on the same PHP files
+                ensure_installed = { "lua_ls", "ts_ls", "clangd", "intelephense", "elixirls", "vue_ls" }
             })
         end,
     },
     {
         "neovim/nvim-lspconfig",
         config = function()
-            local capabilities = require("cmp_nvim_lsp").default_capabilities()
+            local capabilities = require("blink.cmp").get_lsp_capabilities()
 
-            local lspconfig = require("lspconfig")
+            vim.lsp.config("*", { capabilities = capabilities })
 
-            lspconfig.lua_ls.setup({
-                capabilities = capabilities,
+            vim.lsp.config("clangd", {
+                cmd = { "clangd", "--fallback-style=webkit" },
             })
 
-            lspconfig.ts_ls.setup({
-                capabilities = capabilities,
+            vim.lsp.config("vue_ls", {
+                filetypes = { "vue" },
             })
 
-            lspconfig.clangd.setup({
-                cmd = {
-                    "clangd",
-                    "--fallback-style=webkit",
-                },
-                capabilities = capabilities,
+            vim.lsp.config("elixirls", {
+                cmd = { vim.fn.expand("~/.local/share/nvim/mason/bin/elixir-ls") },
             })
 
-            lspconfig.volar.setup({
-                capabilities = capabilities,
-                filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue", "json" },
+            vim.lsp.enable({
+                "lua_ls",
+                "ts_ls",
+                "clangd",
+                "vue_ls",
+                "elixirls",
+                "intelephense",
             })
-
-            lspconfig.intelephense.setup({
-                capabilities = capabilities,
-            })
-
-            lspconfig.phpactor.setup({
-                capabilities = capabilities,
-            })
-
 
             vim.keymap.set("n", "K", vim.lsp.buf.hover, {})
-
             vim.keymap.set("n", "gd", vim.lsp.buf.definition, {})
             vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, {})
+
+            vim.keymap.set("n", "<leader>ci", function()
+                vim.lsp.buf.code_action({
+                    apply = true,
+                    context = { only = { "source.organizeImports" }, diagnostics = {} },
+                })
+            end, { desc = "Organize imports" })
         end,
     },
 }

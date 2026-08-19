@@ -38,25 +38,31 @@ Basic settings are defined in `lua/vim-basic-config.lua`, including:
 Plugins are managed with `lazy.nvim`. The following plugins are used:
 
 1. **UI and Theming**
-   - `catppuccin.nvim`: A warm and dark theme.
+   - `onedarkpro.nvim`: Atom's One Dark theme for Neovim.
    - `lualine.nvim`: A status line plugin.
+   - `snacks.nvim`: dashboard, indent guides, notifications, floating terminal, zen mode, lazygit popup.
+   - `which-key.nvim`: shows available keybindings as you type.
 
 2. **File Explorer**
    - `neo-tree.nvim`: A file explorer with support for icons and other features.
 
 3. **LSP and Autocompletion**
-   - `mason.nvim` and `mason-lspconfig.nvim`: LSP server management.
+   - `mason.nvim` and `mason-lspconfig.nvim`: LSP server management (`lua_ls`, `ts_ls`, `clangd`, `intelephense`, `elixirls`, `vue_ls`).
    - `nvim-lspconfig`: LSP configurations.
-   - `nvim-cmp`, `cmp-nvim-lsp`, `LuaSnip`: Autocompletion and snippet support.
+   - `blink.cmp`, `LuaSnip`: Autocompletion and snippet support.
 
 4. **Code Formatting and Linting**
-   - `nvimtools/none-ls.nvim`: For integrating formatters and linters like `stylua` and `prettier`.
+   - `conform.nvim`: formatting (`stylua`, `prettier`, `mix format`), replaces the unmaintained `none-ls`/`null-ls`.
+   - `nvim-lint`: linting (`eslint_d`).
 
 5. **Fuzzy Finder**
    - `telescope.nvim`: A powerful fuzzy finder with extensions for various types of searches.
 
 6. **Syntax Highlighting**
    - `nvim-treesitter`: Enhanced syntax highlighting and parsing for multiple languages.
+
+7. **AI**
+   - `claudecode.nvim`: MCP bridge to the Claude Code CLI — buffers, selection and diagnostics visible to Claude live.
 
 ### Keybindings
 
@@ -80,7 +86,17 @@ Keybindings are defined throughout the configuration. Notable ones include:
   - `gd`: Go to definition.
 
 - **Autocompletion and Snippets**
-  - `<Tab>`: Navigate through completion suggestions and snippet placeholders.
+  - `<Tab>`/`<CR>`: Navigate and confirm completion suggestions (blink.cmp default preset).
+
+- **Snacks**
+  - `<leader>gg`: Open lazygit.
+  - `<leader>zz`: Toggle zen mode.
+  - `<leader>tt`: Toggle floating terminal.
+
+- **Claude Code**
+  - `<leader>ac`: Toggle Claude Code.
+  - `<leader>af`: Focus Claude Code.
+  - `<leader>as` (visual mode): Send selection to Claude Code.
 
 ### Custom Settings
 
