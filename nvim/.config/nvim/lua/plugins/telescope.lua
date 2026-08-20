@@ -1,7 +1,10 @@
 return {
     {
         'nvim-telescope/telescope.nvim',
-        tag = '0.1.8',
+        -- Must track `master`: the 0.1.8 tag previewer calls
+        -- `nvim-treesitter.parsers.ft_to_lang`, which no longer exists on
+        -- nvim-treesitter `main`. Master uses `vim.treesitter` directly.
+        branch = 'master',
         dependencies = { 'nvim-lua/plenary.nvim' },
         config = function()
             local builtin = require('telescope.builtin')
