@@ -11,7 +11,10 @@ return {
             require("mason-lspconfig").setup({
                 -- phpactor removed: was running duplicate/conflicting diagnostics
                 -- alongside intelephense on the same PHP files
-                ensure_installed = { "lua_ls", "ts_ls", "clangd", "intelephense", "elixirls", "vue_ls" }
+                ensure_installed = {
+                    "lua_ls", "ts_ls", "clangd", "intelephense", "elixirls", "vue_ls",
+                    "pyright", "tailwindcss", "cssls", "html", "jsonls", "dockerls",
+                }
             })
         end,
     },
@@ -41,6 +44,12 @@ return {
                 "vue_ls",
                 "elixirls",
                 "intelephense",
+                "pyright",
+                "tailwindcss",
+                "cssls",
+                "html",
+                "jsonls",
+                "dockerls",
             })
 
             vim.keymap.set("n", "K", vim.lsp.buf.hover, {})
