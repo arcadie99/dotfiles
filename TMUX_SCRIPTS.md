@@ -48,9 +48,9 @@ nvim ~/.local/scripts/tmux-sessionizer
 **Keybind:** Nici unul (se folosește din CLI)
 
 **Ce face:**
-- Creează o fereastră tmux dedicată pentru un git branch
+- Creează o fereastră tmux numită după un git branch
 - Rulează comenzi în acea fereastră
-- Perfect pentru lucru pe multiple branches simultan
+- Pentru branches simultane, folosește directoare worktree separate
 
 **Cum funcționează:**
 ```bash
@@ -69,25 +69,12 @@ tmux-windowizer bugfix/auth npm run dev
 tmux-windowizer main npm test
 ```
 
-**Workflow tipic:**
-```bash
-# Lucrezi pe un feature
-git checkout feature/new-ui
-
-# Vrei să vezi ce e pe main fără să schimbi branch
-tmux-windowizer main git log --oneline
-
-# Acum ai 2 ferestre în aceeași sesiune:
-# 1. feature_new-ui (branch-ul tău curent)
-# 2. main (window separat cu info despre main)
-
-# Switch între ele: prefix + număr fereastră
-```
-
-**De ce e util?**
-- Compari code între branches fără context switching
-- Rulezi teste pe main în timp ce codezi pe feature
-- Izolare clară: fiecare branch = fereastră separată
+**Comportament:**
+- Numele complet al branch-ului devine numele ferestrei (`feature/login` → `feature_login`).
+- Comanda și argumentele sunt trimise literal, apoi executate cu Enter.
+- Fereastra nouă pornește în directorul curent. O fereastră existentă își păstrează directorul.
+- Nu face checkout și nu creează worktree: pentru lucru pe alt branch, pregătește mai întâi un worktree și rulează scriptul de acolo.
+- Dacă panoul existent rulează alt program decât un shell, scriptul refuză trimiterea comenzii.
 
 ---
 
@@ -98,7 +85,7 @@ tmux-windowizer main git log --oneline
 **Ce face:**
 - Acces rapid la [cht.sh](https://cht.sh) - cel mai bun cheat sheet pentru programatori
 - Caută documentație pentru limbaje și comenzi
-- Rezultatele apar într-o fereastră tmux nouă
+- Rezultatele apar în `less`, în fereastra scriptului
 
 **Cum funcționează:**
 
@@ -434,3 +421,10 @@ chmod +x ~/.local/scripts/tmux-*
 ---
 
 **Enjoy the ThePrimeagen workflow! 🚀**
+
+### Actualizări de comportament
+
+- Sessionizer folosește nume cu un sufix derivat din calea canonică, pentru a separa proiectele cu același nume. Sesiunile vechi rămân disponibile prin `tmux attach -t <nume>`.
+- Cheatsheet afișează rezultatul în fereastra curentă, în `less` (`q` pentru ieșire); `prefix+i` deschide deja o fereastră pentru script.
+- `prefix+r` reîncarcă configurația; `prefix+R` reordonează ferestrele.
+- Ferestrele și split-urile noi folosesc directorul panoului activ. Istoricul este de 50.000 de linii pentru panourile noi.

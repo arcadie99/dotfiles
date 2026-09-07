@@ -9,4 +9,6 @@ if [ -d "$HOME/.config/zsh" ]; then
     for file in "$HOME/.config/zsh"/*.zsh; do
         [ -r "$file" ] && source "$file"
     done
+
 fi
+

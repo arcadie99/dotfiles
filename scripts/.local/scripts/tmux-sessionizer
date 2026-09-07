@@ -1,29 +1,32 @@
 #!/usr/bin/env bash
+# Quickly switch between projects using fzf.
+set -euo pipefail
 
-# ThePrimeagen's tmux-sessionizer
-# Quickly switch between projects using fzf
-
-if [[ $# -eq 1 ]]; then
+if (( $# > 1 )); then
+    echo "Usage: tmux-sessionizer [directory]" >&2
+    exit 1
+fi
+if (( $# == 1 )); then
     selected=$1
 else
-    # Customize these paths to your project directories
-    selected=$(find ~/Developer/github ~/Developer/mit-dev/code ~/ ~/Developer -mindepth 1 -maxdepth 1 -type d | fzf)
+    roots=()
+    for root in "$HOME/Developer/github" "$HOME/Developer/mit-dev/code" "$HOME" "$HOME/Developer"; do
+        [[ ! -d $root ]] || roots+=("$root")
+    done
+    selected=$(find "${roots[@]}" -mindepth 1 -maxdepth 1 -type d | sort -u | fzf) || exit 0
 fi
+[[ -n $selected ]] || exit 0
+selected=$(cd -- "$selected" && pwd -P) || exit 1
+# Include the canonical path in the identity: equal basenames are distinct projects.
+name=$(basename "$selected" | tr -c '[:alnum:]_-' '_')
+name=${name%_}
+digest=$(printf '%s' "$selected" | shasum -a 256)
+selected_name="${name:-project}-${digest:0:12}"
 
-if [[ -z $selected ]]; then
-    exit 0
+if [[ -z ${TMUX:-} ]]; then
+    exec tmux new-session -A -s "$selected_name" -c "$selected"
 fi
-
-selected_name=$(basename "$selected" | tr . _)
-tmux_running=$(pgrep tmux)
-
-if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
-    tmux new-session -s $selected_name -c $selected
-    exit 0
+if ! tmux has-session -t "=$selected_name" 2>/dev/null; then
+    tmux new-session -ds "$selected_name" -c "$selected"
 fi
-
-if ! tmux has-session -t=$selected_name 2> /dev/null; then
-    tmux new-session -ds $selected_name -c $selected
-fi
-
-tmux switch-client -t $selected_name
+exec tmux switch-client -t "=$selected_name"

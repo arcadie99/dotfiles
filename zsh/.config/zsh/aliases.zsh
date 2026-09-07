@@ -25,3 +25,14 @@ alias ....='cd ../../..'
 # Dotfiles management
 alias dotfiles='cd ~/.dotfiles'
 alias dots='cd ~/.dotfiles'
+
+# Neovim with icon variants
+alias nv='nvim'                      # Neovim with Nerd Font icons (default)
+alias nva='NVIM_USE_ASCII=1 nvim'    # Neovim with ASCII-only icons
+
+# personal
+# work
+
+alias tpersonal='tmux -L personal attach || tmux -L personal'
+alias twork='tmux -L work attach || tmux -L work'
+

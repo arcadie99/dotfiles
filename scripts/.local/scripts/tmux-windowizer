@@ -1,16 +1,25 @@
 #!/usr/bin/env bash
-
-# ThePrimeagen's tmux-windowizer
-# Creates a tmux window for a git branch and runs commands in it
-
-branch_name=$(basename $1)
-session_name=$(tmux display-message -p "#S")
-clean_name=$(echo $branch_name | tr "./" "__")
-target="$session_name:$clean_name"
-
-if ! tmux has-session -t $target 2> /dev/null; then
-    tmux neww -dn $clean_name
+# Name a window after a branch; this does not checkout a branch or create a worktree.
+set -euo pipefail
+if (( $# < 2 )) || [[ -z ${TMUX:-} ]]; then
+    echo "Usage (inside tmux): tmux-windowizer <branch-name> <command> [args...]" >&2
+    exit 1
 fi
-
+clean_name=$(printf '%s' "$1" | tr './:' '___')
+[[ -n $clean_name ]] || exit 1
 shift
-tmux send-keys -t $target "$*"
+session_id=$(tmux display-message -p '#{session_id}')
+target="$session_id:=$clean_name"
+if ! tmux has-session -t "$target" 2>/dev/null; then
+    pane=$(tmux new-window -d -P -F '#{pane_id}' -t "$session_id:" -n "$clean_name" -c "$PWD")
+else
+    pane=$(tmux display-message -p -t "$target" '#{pane_id}')
+    current=$(tmux display-message -p -t "$pane" '#{pane_current_command}')
+    case "$current" in
+        bash|zsh|sh) ;;
+        *) echo "Window is busy ($current); command was not sent." >&2; exit 1 ;;
+    esac
+fi
+printf -v command '%q ' "$@"
+tmux send-keys -l -t "$pane" "$command"
+tmux send-keys -t "$pane" Enter
