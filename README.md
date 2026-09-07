@@ -99,19 +99,24 @@ file. Write the message - several paragraphs, a numbered answer to a list of
 questions, whatever - then `:wq`. The text is pasted into the pane you came from.
 
 ```tmux
-bind-key e display-popup -E -w 90% -h 85% \
-    -b rounded -S 'fg=#a6e3a1' -T ' compose ' \
-    "$HOME/.local/scripts/tmux-compose '#{pane_id}'"
+bind-key e run-shell -b "$HOME/.local/scripts/tmux-compose '#{pane_id}'"
 ```
 
-Two things make it work:
+Three things make it work:
 
+- **`run-shell`, not `display-popup`.** The script has to know which pane to paste
+  back into, and `display-popup` does not expand formats in its command - it would
+  receive the literal string `#{pane_id}`. `run-shell` does expand them, so the key
+  is bound to that and the script re-enters itself inside the popup, carrying the
+  target in `COMPOSE_TARGET`. `-b` keeps nvim from blocking the tmux command queue.
 - **Bracketed paste** (`paste-buffer -p`). Without it every newline reads as Enter
   and the agent submits the message one line at a time.
 - **No Enter is sent.** The text lands in the input and stays there, so you can
   review it and submit yourself.
 
-The editor is `$VISUAL`, then `$EDITOR`, then `nvim`.
+The editor is `$VISUAL`, then `$EDITOR`, then `nvim`. Note that a popup inherits the
+tmux *server's* environment, not the environment of the shell you pressed the key
+in - so set `EDITOR` somewhere `.zshenv` reaches, such as `zsh/.config/zsh/`.
 
 ## 🗑️ Uninstallation
 

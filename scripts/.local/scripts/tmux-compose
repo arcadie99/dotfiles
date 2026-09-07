@@ -2,21 +2,31 @@
 
 # Compose a message in nvim, then paste it into the pane you came from.
 #
-# Bound to <prefix>+e, which opens the editor in a centred popup. Meant for
-# writing long, formatted input for a CLI AI agent (Claude Code, cursor-agent,
-# opencode) instead of fighting a one-line prompt - answering several questions
-# at once, say.
+# Bound to <prefix>+e. Meant for writing long, formatted input for a CLI AI
+# agent (Claude Code, cursor-agent, opencode) instead of fighting a one-line
+# prompt - answering several questions at once, say.
 #
 # The text is pasted, never submitted: review it and press Enter yourself.
+#
+# Runs in two phases. `display-popup` does NOT expand formats in its command,
+# so it cannot be told which pane invoked it; `run-shell` does. So the key is
+# bound to run-shell, which passes the pane id here, and this script re-enters
+# itself inside the popup with the target in the environment.
 
 set -euo pipefail
 
-target="${1:-}"
-if [ -z "$target" ]; then
-    echo "usage: tmux-compose <target-pane-id>" >&2
-    exit 1
+if [ -z "${COMPOSE_TARGET:-}" ]; then
+    target="${1:-}"
+    if [ -z "$target" ]; then
+        echo "usage: tmux-compose <target-pane-id>" >&2
+        exit 1
+    fi
+    exec tmux display-popup -E -w 90% -h 85% \
+        -b rounded -S 'fg=#a6e3a1' -T ' compose ' \
+        "COMPOSE_TARGET='$target' '$0'"
 fi
 
+target="$COMPOSE_TARGET"
 editor="${VISUAL:-${EDITOR:-nvim}}"
 
 tmpdir=$(mktemp -d)
