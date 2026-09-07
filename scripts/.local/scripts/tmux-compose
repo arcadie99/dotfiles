@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+# Compose a message in nvim, then paste it into the pane you came from.
+#
+# Bound to <prefix>+e, which opens the editor in a centred popup. Meant for
+# writing long, formatted input for a CLI AI agent (Claude Code, cursor-agent,
+# opencode) instead of fighting a one-line prompt - answering several questions
+# at once, say.
+#
+# The text is pasted, never submitted: review it and press Enter yourself.
+
+set -euo pipefail
+
+target="${1:-}"
+if [ -z "$target" ]; then
+    echo "usage: tmux-compose <target-pane-id>" >&2
+    exit 1
+fi
+
+editor="${VISUAL:-${EDITOR:-nvim}}"
+
+tmpdir=$(mktemp -d)
+trap 'rm -rf "$tmpdir"' EXIT
+
+# A .md name so the editor picks up markdown: wrapping, spell, highlighting.
+draft="$tmpdir/compose.md"
+: > "$draft"
+
+"$editor" "$draft"
+
+# $(cat) strips trailing newlines, so the paste leaves no blank line behind.
+text=$(cat "$draft")
+[ -n "$text" ] || exit 0
+
+# -p pastes in bracketed-paste mode. Without it every newline reads as Enter
+# and the agent submits the message line by line.
+printf '%s' "$text" | tmux load-buffer -b compose -
+tmux paste-buffer -p -d -b compose -t "$target"

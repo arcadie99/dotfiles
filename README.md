@@ -7,7 +7,7 @@ Personal dotfiles managed with GNU Stow, inspired by ThePrimeagen's setup.
 - **zsh** - Zsh configuration (PATH, aliases, environment variables)
 - **nvim** - Neovim configuration (Lua-based with lazy.nvim)
 - **tmux** - Tmux configuration with Catppuccin theme
-- **scripts** - Custom shell scripts (tmux-sessionizer, tmux-windowizer, tmux-cht.sh, tmux-worktrees)
+- **scripts** - Custom shell scripts (tmux-sessionizer, tmux-windowizer, tmux-cht.sh, tmux-worktrees, tmux-compose)
 - **tools** - Manifest of external binaries (not a stow package - see [Tools](#-tools))
 
 ## 🚀 Installation
@@ -87,6 +87,31 @@ bind-key g display-popup -E -w 90% -h 85% \
 The popup is ephemeral (`-E`) - quitting the tool closes it. `tmux-worktrees` is a
 launcher that resolves the binary, since a popup does not inherit the interactive
 shell's PATH.
+
+## ✍️ Composing input in nvim
+
+CLI AI agents (Claude Code, cursor-agent, opencode) read their own input, so zsh's
+`edit-command-line` cannot reach them. `tmux-compose` solves it one level up, in
+tmux, so it works with any of them.
+
+<kbd>prefix</kbd>+<kbd>e</kbd> opens nvim in a centred popup on a scratch `.md`
+file. Write the message - several paragraphs, a numbered answer to a list of
+questions, whatever - then `:wq`. The text is pasted into the pane you came from.
+
+```tmux
+bind-key e display-popup -E -w 90% -h 85% \
+    -b rounded -S 'fg=#a6e3a1' -T ' compose ' \
+    "$HOME/.local/scripts/tmux-compose '#{pane_id}'"
+```
+
+Two things make it work:
+
+- **Bracketed paste** (`paste-buffer -p`). Without it every newline reads as Enter
+  and the agent submits the message one line at a time.
+- **No Enter is sent.** The text lands in the input and stays there, so you can
+  review it and submit yourself.
+
+The editor is `$VISUAL`, then `$EDITOR`, then `nvim`.
 
 ## 🗑️ Uninstallation
 
