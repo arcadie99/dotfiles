@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+# Install the tools listed in Toolfile into ~/.local/bin.
+# Configs are handled by ./install (GNU Stow); this handles binaries.
+
+set -euo pipefail
+
+cd "$(dirname "$0")"
+TOOLFILE="$PWD/Toolfile"
+BIN="$HOME/.local/bin"
+
+export GOBIN="$BIN"
+export GOPRIVATE="${GOPRIVATE:-github.com/arcadie99/*}"
+
+mkdir -p "$BIN"
+
+echo "🔧 Installing tools into $BIN"
+echo ""
+
+while read -r kind name source _rest; do
+    case "$kind" in
+        '' | \#*) continue ;;
+    esac
+
+    case "$kind" in
+        go)
+            if ! command -v go >/dev/null 2>&1; then
+                echo "❌ $name needs Go, which is not installed"
+                exit 1
+            fi
+            echo "📦 $name  ($source)"
+            go install "$source"
+            echo "✅ $name -> $BIN/$name"
+            ;;
+        *)
+            echo "⚠️  unknown kind '$kind' for '$name', skipping"
+            ;;
+    esac
+    echo ""
+done < "$TOOLFILE"
+
+echo "🎉 Tools installed."
+echo ""
+echo "Make sure $BIN is on your PATH (zsh/.config/zsh/path.zsh does this)."

@@ -57,5 +57,8 @@ for package in "${PACKAGES[@]}"; do
     fi
 done
 echo ""
+echo "Tools (binaries, not configs) are installed separately:"
+echo "  ./tools/install-tools"
+echo ""
 echo "To uninstall, run: stow -D <package>"
 echo "To reinstall, run: ./install"

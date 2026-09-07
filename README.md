@@ -7,7 +7,8 @@ Personal dotfiles managed with GNU Stow, inspired by ThePrimeagen's setup.
 - **zsh** - Zsh configuration (PATH, aliases, environment variables)
 - **nvim** - Neovim configuration (Lua-based with lazy.nvim)
 - **tmux** - Tmux configuration with Catppuccin theme
-- **scripts** - Custom shell scripts (tmux-sessionizer, tmux-windowizer, tmux-cht.sh)
+- **scripts** - Custom shell scripts (tmux-sessionizer, tmux-windowizer, tmux-cht.sh, tmux-worktrees)
+- **tools** - Manifest of external binaries (not a stow package - see [Tools](#-tools))
 
 ## 🚀 Installation
 
@@ -48,6 +49,45 @@ stow scripts   # Install scripts only
 stow zsh nvim tmux scripts
 ```
 
+
+## 🔧 Tools
+
+`install` handles configs (symlinks via stow). Binaries are handled separately by
+`tools/install-tools`, which reads `tools/Toolfile` and installs each entry into
+`~/.local/bin`.
+
+```bash
+./tools/install-tools
+```
+
+`Toolfile` format - one line per tool, `<kind>  <name>  <source>`:
+
+```
+go  worktree-tui  github.com/arcadie99/worktree-tui/cmd/worktree-tui@latest
+```
+
+`go` entries are installed with `go install`. To add a tool, add a line and re-run
+the script.
+
+Private repos need `GOPRIVATE` (set in `zsh/.config/zsh/path.zsh`) and a git
+credential helper - `gh auth login` provides one.
+
+### worktree-tui
+
+A dashboard for git worktrees across projects, with the status of the AI agent
+sessions in each. Bound to <kbd>prefix</kbd>+<kbd>g</kbd>, which opens it in a
+centred tmux popup:
+
+```tmux
+bind-key g display-popup -E -w 90% -h 85% \
+    -b rounded -S 'fg=#89b4fa' -T ' worktree-tui ' \
+    "$HOME/.local/scripts/tmux-worktrees"
+```
+
+The popup is ephemeral (`-E`) - quitting the tool closes it. `tmux-worktrees` is a
+launcher that resolves the binary, since a popup does not inherit the interactive
+shell's PATH.
+
 ## 🗑️ Uninstallation
 
 ```bash
@@ -72,7 +112,10 @@ stow -D tmux
 ├── nvim/.config/nvim/               # Neovim config → ~/.config/nvim/
 ├── tmux/.tmux.conf                  # Tmux config → ~/.tmux.conf
 ├── scripts/.local/scripts/          # Scripts → ~/.local/scripts/
-├── install                          # Installation script
+├── tools/                           # Binaries (NOT stowed)
+│   ├── Toolfile                     # Manifest of tools to install
+│   └── install-tools                # Installs them into ~/.local/bin
+├── install                          # Installation script (configs)
 ├── uninstall                        # Uninstallation script
 └── README.md
 ```

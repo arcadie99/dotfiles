@@ -1,0 +1,9 @@
+# Tools installed into ~/.local/bin by ./install-tools
+#
+# Format:  <kind>  <name>  <source>
+#
+#   go   installed with `go install <source>`
+#
+# Add a line here and re-run ./install-tools.
+
+go  worktree-tui  github.com/arcadie99/worktree-tui/cmd/worktree-tui@latest
