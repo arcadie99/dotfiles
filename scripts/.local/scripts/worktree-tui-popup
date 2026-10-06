@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+# Launch worktree-tui in a popup. Bound to <prefix>+g in tmux and to
+# <prefix>+t in Herdr; both open it in a centred popup. Neither popup
+# inherits the interactive shell's PATH, so resolve the binary explicitly.
+#
+# Still reachable as `tmux-worktrees` through a symlink, which is the name
+# ~/.tmux.conf binds.
+
+set -uo pipefail
+
+for candidate in \
+    "$HOME/.local/bin/worktree-tui" \
+    "$HOME/go/bin/worktree-tui" \
+    "$(command -v worktree-tui 2>/dev/null)"
+do
+    if [ -n "$candidate" ] && [ -x "$candidate" ]; then
+        exec "$candidate" "$@"
+    fi
+done
+
+cat <<'MSG'
+
+  worktree-tui is not installed.
+
+  Install it with:
+
+      ~/.dotfiles/tools/install-tools
+
+MSG
+
+read -rsn1 -p "  Press any key to close..."
+echo
