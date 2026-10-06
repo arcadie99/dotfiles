@@ -8,6 +8,9 @@ vim.g.mapleader = " "
 
 vim.opt.termguicolors = true
 
+-- Border on all floating windows (LSP hover, diagnostics, etc.)
+vim.o.winborder = "rounded"
+
 -- 2 spaces for JS/TS/JSON (Node.js/NestJS convention)
 vim.api.nvim_create_autocmd("FileType", {
     pattern = { "javascript", "javascriptreact", "typescript", "typescriptreact", "json", "jsonc" },
